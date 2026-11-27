@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 300" width="620" height="150" role="img" aria-label="Shachaf Nave, Builder">
+  <defs><linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#1f1f1f"/><stop offset="1" stop-color="#c9c9c9"/></linearGradient></defs>
+  <rect width="1240" height="300" fill="#ffffff"/>
+  <g transform="translate(56 24)">
+    <rect width="236" height="236" fill="#1f1f1f"/>
+    <path d="M34 88 C 70 90 100 105 120 128 C 145 108 172 90 200 80 L 203 88 C 175 102 148 122 124 146 L 116 138 C 96 120 70 110 36 107 Z" fill="#ffffff"/>
+    <path d="M149 47 C 162 48 172 53 178 60 C 186 54 196 49 206 46 L 204 52 C 194 56 186 62 180 69 C 172 62 162 58 150 57 Z" fill="#ffffff"/>
+  </g>
+  <rect x="340" y="24" width="5" height="236" rx="2.5" fill="#c9c9c9"/>
+  <text x="394" y="136" font-family="-apple-system, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="56" font-weight="700" fill="#1f1f1f">Shachaf Nave</text>
+  <text x="394" y="180" font-family="-apple-system, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="30" fill="#6b6b6b">Builder</text>
+  <text x="394" y="218" font-family="-apple-system, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="26" fill="#6b6b6b">linkedin.com/in/shachaf-nave</text>
+  <rect x="56" y="276" width="1128" height="10" fill="url(#bar)"/>
+</svg>
