@@ -1,0 +1,44 @@
+schema_version: '1.1'
+name: interview-vague-request
+description: First interview turn on a vague request.
+tags:
+- interview
+- first-turn
+execution:
+  prompt: make me something for my team
+  max_turns: 8
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+  - Write
+  - Edit
+runs: 1
+graders:
+- type: tool_used
+  name: interview-skill-used
+  tool: Skill
+  min: 1
+  input_match: interview
+- type: llm
+  name: one-question
+  criteria: The reply asks exactly one question, or asks none and shows a brief for confirmation. It contains no code.
+- type: llm
+  name: asks-for-missing-basics
+  criteria: The single question targets the goal or the users, since the request gives neither.
+- type: file_exists
+  name: writes-nothing
+  path: '**'
+  exists: false
+- type: tool_used
+  name: no-write
+  tool: Write
+  min: 0
+  max: 0
+- type: tool_used
+  name: no-edit
+  tool: Edit
+  min: 0
+  max: 0

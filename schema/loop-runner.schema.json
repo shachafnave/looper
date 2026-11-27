@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "loop-runner.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reviewer_agent": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "review_skill": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "ui_gate_skill": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "error_skill": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "commands_from": {
+      "type": "string",
+      "pattern": "^(?![/~])(?!(.*/)?\\.\\.(/|#|$))[^#\\s]([^#\\n]*[^#\\s])?(#\\S([^\\n]*\\S)?)?$"
+    },
+    "ship_skill": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "plan_dir": {
+      "type": "string",
+      "pattern": "^(?![/~])(?!(.*/)?\\.\\.(/|$))\\S(.*\\S)?$"
+    },
+    "spec_dir": {
+      "type": "string",
+      "pattern": "^(?![/~])(?!(.*/)?\\.\\.(/|$))\\S(.*\\S)?$"
+    },
+    "on_new_file": {
+      "type": "string",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "rules_file": {
+      "type": "string",
+      "pattern": "^(?![/~])(?!(.*/)?\\.\\.(/|$))\\S(.*\\S)?$"
+    }
+  }
+}

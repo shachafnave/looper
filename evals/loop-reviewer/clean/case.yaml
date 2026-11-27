@@ -1,0 +1,41 @@
+schema_version: '1.1'
+name: loop-reviewer-clean
+description: loop-reviewer agent on the clean fixture.
+tags:
+- loop-reviewer
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: 'Dispatch the agent-loop-runner:loop-reviewer agent with only this brief. Loop output: `slugify.py`. Loop output promise: `slugify(text)` returns a lowercase ASCII slug of letters, digits and single dashes, with no leading or trailing dash. By design, any character that is not an ASCII letter or digit, accented letters included, is a separator and is dropped, and input with no ASCII letters or digits returns an empty string. Gate: `review`. Then reply with the reviewer''s report verbatim and nothing else.'
+  max_turns: 20
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Agent
+runs: 1
+graders:
+- type: tool_used
+  name: dispatches-loop-reviewer
+  tool: Agent
+  min: 1
+  input_match: loop-reviewer
+- type: tool_used
+  name: main-thread-no-edits
+  tool: Edit
+  min: 0
+  max: 0
+- type: regex
+  name: no-objections
+  pattern: No objections found\.
+- type: regex
+  name: file-unchanged
+  pattern: return dashed\.strip\("-"\)
+  target:
+    source: file
+    path: slugify.py
+- type: llm
+  name: lists-what-was-tried
+  criteria: The report starts with No objections found., lists the inputs or edge cases the reviewer tried, raises no objection about dropping non-ASCII characters or returning an empty slug, and contains no praise.

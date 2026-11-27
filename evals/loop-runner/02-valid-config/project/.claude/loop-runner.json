@@ -1,0 +1,12 @@
+{
+  "reviewer_agent": "stub-reviewer",
+  "review_skill": "stub-review",
+  "ui_gate_skill": "stub-ui-gate",
+  "error_skill": "stub-error",
+  "commands_from": "RULES.md#Commands",
+  "ship_skill": "stub-ship",
+  "plan_dir": "docs/plans",
+  "spec_dir": "docs/specs",
+  "on_new_file": "Add a backticked row for the file to docs/file-index.md in the same loop.",
+  "rules_file": "RULES.md"
+}

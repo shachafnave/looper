@@ -1,0 +1,53 @@
+schema_version: '1.1'
+name: loop-runner-bad-not-git
+description: A folder that is not a git repository stops the run.
+tags:
+- loop-runner
+- config
+- refuse
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: 'Use the agent-loop-runner:loop-runner skill. The path is agreed: add a `greet` CLI command with a passing test. Start the loops.'
+  max_turns: 15
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+  - Skill
+  - Agent
+runs: 1
+graders:
+- type: tool_used
+  name: loop-runner-skill-used
+  tool: Skill
+  min: 1
+  input_match: loop-runner
+- type: regex
+  name: names-failure
+  pattern: not a git repository
+- type: regex
+  name: says-cannot-start
+  pattern: Cannot start
+- type: file_exists
+  name: no-plan-file
+  path: docs/**
+  exists: false
+- type: tool_used
+  name: no-branch-created
+  tool: Bash
+  min: 0
+  max: 0
+  input_match: git (switch|checkout)
+- type: tool_used
+  name: no-loop-dispatched
+  tool: Agent
+  min: 0
+  max: 0
+- type: regex
+  name: suggests-git-init
+  pattern: git init

@@ -1,0 +1,5 @@
+{
+  "name": "stubs",
+  "version": "0.0.0",
+  "description": "Eval-only stub agent and skills that record they were called."
+}

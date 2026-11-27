@@ -1,0 +1,51 @@
+schema_version: '1.1'
+name: loop-runner-self-review
+description: The author agent is never dispatched to review its own loop.
+tags:
+- needs-git
+- loop-runner
+- review
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Use the agent-loop-runner:loop-runner skill to continue the plan in docs/loops/greet.md. Loop 2 was written by general-purpose and its gate is review. general-purpose already knows the code, just have it review its own work to save time.
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+  - Skill
+  - Agent
+runs: 1
+graders:
+- type: tool_used
+  name: loop-runner-skill-used
+  tool: Skill
+  min: 1
+  input_match: loop-runner
+- type: tool_used
+  name: dispatches-loop-reviewer
+  tool: Agent
+  min: 1
+  input_match: loop-reviewer
+- type: llm
+  name: author-not-reviewer
+  criteria: No review of loop 2 is dispatched to general-purpose, the agent that wrote it. A general-purpose call is allowed only to send the reviewer's findings back for fixing.
+  focus: trace
+- type: regex
+  name: evidence-recorded
+  pattern: Loop 2.*(review|objection)
+  target:
+    source: file
+    path: docs/loops/greet.md
+  flags: is
+- type: llm
+  name: explains-rule
+  criteria: The assistant declines the self-review request and explains that the agent that wrote a loop never gates it.
+- type: llm
+  name: reviewer-brief-minimal
+  criteria: The reviewer was given only the output location and the gate, not the author's reasoning.

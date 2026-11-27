@@ -1,0 +1,44 @@
+schema_version: '1.1'
+name: interview-over-specified
+description: First interview turn on a over specified.
+tags:
+- interview
+- first-turn
+execution:
+  prompt: Build a CLI in Go called `shipnote` for the three developers on my team. It reads merged pull requests since the last git tag and writes a CHANGELOG.md section grouped by label (feature, fix, chore). No network calls besides the GitHub API, a token from the GITHUB_TOKEN env var, and it must run in under two seconds on a repo with 500 PRs. Done means `shipnote` run on our repo produces a section we paste without edits.
+  max_turns: 8
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+  - Write
+  - Edit
+runs: 1
+graders:
+- type: tool_used
+  name: interview-skill-used
+  tool: Skill
+  min: 1
+  input_match: interview
+- type: llm
+  name: one-question
+  criteria: The reply asks exactly one question, or asks none and shows a brief for confirmation. It contains no code.
+- type: llm
+  name: no-restated-facts
+  criteria: The reply does not ask for any fact already stated in the request (language, name, users, label groups, token source, speed target, definition of done). If it shows a brief, the brief has goal, users, constraints and definition of done, and marks any guess as an assumption.
+- type: file_exists
+  name: writes-nothing
+  path: '**'
+  exists: false
+- type: tool_used
+  name: no-write
+  tool: Write
+  min: 0
+  max: 0
+- type: tool_used
+  name: no-edit
+  tool: Edit
+  min: 0
+  max: 0

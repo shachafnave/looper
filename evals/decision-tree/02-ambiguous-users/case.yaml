@@ -1,0 +1,44 @@
+schema_version: '1.1'
+name: decision-tree-ambiguous-users
+description: decision-tree skill on the ambiguous users brief.
+tags:
+- decision-tree
+execution:
+  prompt: 'Use the agent-loop-runner:decision-tree skill on this confirmed brief.
+
+
+    Goal: turn a folder of meeting transcripts into a weekly summary of decisions.
+
+    Users: "the team".
+
+    Must: run locally on the transcripts folder in this repo.
+
+    Done means: a summary file appears with every decision and its owner.
+
+    Location: this repo.'
+  max_turns: 8
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+runs: 1
+graders:
+- type: tool_used
+  name: decision-tree-skill-used
+  tool: Skill
+  min: 1
+  input_match: decision-tree
+- type: llm
+  name: one-users-question
+  criteria: The users branch is flagged as unsettled and exactly one question is asked about it (people, AI agents, or both). The location branch is not asked about.
+- type: llm
+  name: no-final-path
+  criteria: No final path is declared settled before the users answer; any provisional path is marked pending that answer.
+- type: llm
+  name: choice-why-flips
+  criteria: Every decided branch states a choice, a why, and a flips if condition.
+- type: llm
+  name: checkable-done-criteria
+  criteria: While any branch is still open the path is marked pending and no v1 done criteria are given yet; any criterion that is given is checkable by a named command or an explicit user yes.

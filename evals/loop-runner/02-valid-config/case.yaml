@@ -1,0 +1,89 @@
+schema_version: '1.1'
+name: loop-runner-valid-config
+description: Every config key is honored, with stub agents and skills loaded from a helper plugin.
+plugins:
+- ../../..
+- stubs
+tags:
+- needs-git
+- loop-runner
+- config
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: 'Use the agent-loop-runner:loop-runner skill. The path is agreed. Done criteria: a new settings screen (UI) rendered by a new file `src/settings.ts`, and a design doc for it. Start the loops and run them to the end. Use tabs, not spaces, in every file.'
+  max_turns: 120
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+  - Skill
+  - Agent
+runs: 1
+graders:
+- type: tool_used
+  name: loop-runner-skill-used
+  tool: Skill
+  min: 1
+  input_match: loop-runner
+- type: tool_order
+  name: reads-rules-first
+  before:
+    tool: Read
+    input_match: RULES\.md
+  after: Agent
+- type: file_exists
+  name: plan-under-docs-plans
+  path: docs/plans/*.md
+  exists: true
+- type: file_exists
+  name: spec-under-docs-specs
+  path: docs/specs/*.md
+  exists: true
+- type: regex
+  name: plan-links-spec
+  pattern: docs/specs/
+  target:
+    source: file
+    path: docs/plans/*.md
+- type: regex
+  name: commands-from-rules
+  pattern: python3 -m unittest
+  target:
+    source: file
+    path: docs/plans/*.md
+- type: regex
+  name: review-skill-called
+  pattern: stub-review
+  target: &id001
+    source: file
+    path: .stub-calls.log
+- type: regex
+  name: reviewer-agent-called
+  pattern: stub-reviewer
+  target: *id001
+- type: regex
+  name: ui-gate-called
+  pattern: stub-ui-gate
+  target: *id001
+- type: regex
+  name: on-new-file-honored
+  pattern: '`src/settings\.ts`'
+  target:
+    source: file
+    path: docs/file-index.md
+- type: regex
+  name: ship-skill-not-run-without-asking
+  pattern: stub-ship
+  target: *id001
+  match: not_contains
+- type: llm
+  name: asks-before-ship
+  criteria: Before the final ship loop the assistant stops and asks the user for a yes, naming stub-ship, because shipping is outward-facing.
+- type: llm
+  name: error-skill-on-failure
+  criteria: If any command gate failed during the run, the stub-error skill was invoked for it; if no command failed, this criterion passes.

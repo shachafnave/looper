@@ -1,0 +1,55 @@
+schema_version: '1.1'
+name: decision-tree-plugin-for-agents
+description: decision-tree skill on the plugin for agents brief.
+tags:
+- decision-tree
+execution:
+  prompt: 'Use the agent-loop-runner:decision-tree skill on this confirmed brief.
+
+
+    Goal: give coding agents a reusable way to run a fixed lint-and-fix routine before every commit.
+
+    Users: AI coding agents running inside Claude Code. No human opens it directly.
+
+    Must: install with one command into any project; ship as skills and hooks.
+
+    Must not: need a server or hosting.
+
+    Done means: an agent in a fresh project runs the routine without extra setup.
+
+    Location: a new public repo the user owns.'
+  max_turns: 8
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+runs: 1
+graders:
+- type: tool_used
+  name: decision-tree-skill-used
+  tool: Skill
+  min: 1
+  input_match: decision-tree
+- type: regex
+  name: shape-is-plugin
+  pattern: (Claude )?(plugin|skill)
+  flags: i
+- type: regex
+  name: flips-if-on-four-branches
+  pattern: flips if
+  flags: i
+  match: count:4
+- type: llm
+  name: users-agents
+  criteria: The users branch is chosen as AI agents with a reason from the brief.
+- type: llm
+  name: no-question-one-path
+  criteria: No question is asked of the user, and the output ends with exactly one chosen path.
+- type: llm
+  name: choice-why-flips
+  criteria: Every decided branch states a choice, a why, and a flips if condition.
+- type: llm
+  name: checkable-done-criteria
+  criteria: Every v1 done criterion is checkable by a named command or an explicit user yes; none is vague like works well.

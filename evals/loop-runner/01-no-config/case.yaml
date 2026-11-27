@@ -1,0 +1,63 @@
+schema_version: '1.1'
+name: loop-runner-no-config
+description: 'No config: defaults apply, plan under docs/loops, bundled reviewer named, work on a loops branch.'
+tags:
+- needs-git
+- loop-runner
+- defaults
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: 'Use the agent-loop-runner:loop-runner skill. The path is agreed: add a `greet` CLI command with a passing test. Start the loops.'
+  max_turns: 60
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+  - Skill
+  - Agent
+runs: 1
+graders:
+- type: tool_used
+  name: loop-runner-skill-used
+  tool: Skill
+  min: 1
+  input_match: loop-runner
+- type: regex
+  name: announces-defaults
+  pattern: No \.claude/loop-runner\.json found
+  target: trace
+- type: file_exists
+  name: plan-under-docs-loops
+  path: docs/loops/*.md
+  exists: true
+- type: regex
+  name: plan-has-loop-table
+  pattern: \|\s*[Ll]oop\s*\|\s*[Aa]gent\s*\|\s*[Oo]utput\s*\|\s*[Gg]ate\s*\|
+  target:
+    source: file
+    path: docs/loops/*.md
+- type: regex
+  name: review-gate-names-installed-reviewer
+  pattern: agent-loop-runner:loop-reviewer
+  target:
+    source: file
+    path: docs/loops/*.md
+- type: tool_used
+  name: switches-to-loops-branch
+  tool: Bash
+  min: 1
+  input_match: git switch -c loops/
+- type: tool_order
+  name: branch-before-first-loop
+  before:
+    tool: Bash
+    input_match: git switch -c
+  after: Agent
+- type: llm
+  name: no-commit-on-main
+  criteria: The run never makes a commit while on the main branch; any commit happens only after switching to a loops/ branch.

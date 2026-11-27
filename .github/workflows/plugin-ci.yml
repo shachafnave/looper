@@ -1,0 +1,70 @@
+name: plugin-ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Claude Code and Python checkers
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          python -m pip install jsonschema pyyaml
+      - name: Run static checks
+        run: scripts/check-plugin.sh
+
+  api-key-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      has_api_key: ${{ steps.detect.outputs.has_api_key }}
+    steps:
+      - id: detect
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "has_api_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_api_key=false" >> "$GITHUB_OUTPUT"
+            echo "ANTHROPIC_API_KEY is not available, evals will be skipped."
+          fi
+
+  evals:
+    needs: [static, api-key-gate]
+    if: needs.api-key-gate.outputs.has_api_key == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Run plugin evals
+        run: >
+          claude plugin eval . --trust-plugin --scaffold
+          --allow-tools Bash Write Edit
+          --ablation none --no-publish
+          --max-cost-usd 15
+          --threshold 0.8
+          --output-dir eval-results
+          --report eval-results/report.html
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-eval-results
+          path: eval-results

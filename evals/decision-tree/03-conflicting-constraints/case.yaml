@@ -1,0 +1,47 @@
+schema_version: '1.1'
+name: decision-tree-conflicting-constraints
+description: decision-tree skill on the conflicting constraints brief.
+tags:
+- decision-tree
+execution:
+  prompt: 'Use the agent-loop-runner:decision-tree skill on this confirmed brief.
+
+
+    Goal: a dashboard where a small group checks the status of nightly jobs.
+
+    Users: three people on the team, in a browser.
+
+    Must: be a web app.
+
+    Must not: require any hosting or a running server.
+
+    Done means: each person can open it and see last night''s results.
+
+    Location: its own repo.'
+  max_turns: 8
+  timeout_seconds: 600
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+runs: 1
+graders:
+- type: tool_used
+  name: decision-tree-skill-used
+  tool: Skill
+  min: 1
+  input_match: decision-tree
+- type: regex
+  name: names-hosting-conflict
+  pattern: host
+  flags: i
+- type: llm
+  name: resolves-conflict
+  criteria: 'The conflict between must be a web app and no hosting is named. The skill does not silently pick a side: it asks one question with concrete options and their costs, or offers a path satisfying both (such as a static page opened from a file) and asks for a yes.'
+- type: llm
+  name: choice-why-flips
+  criteria: Every decided branch states a choice, a why, and a flips if condition.
+- type: llm
+  name: checkable-done-criteria
+  criteria: While any branch is still open the path is marked pending and no v1 done criteria are given yet; any criterion that is given is checkable by a named command or an explicit user yes.

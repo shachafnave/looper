@@ -1,0 +1,7 @@
+{
+  "name": "agent-loop-runner",
+  "version": "0.1.0",
+  "description": "Interview, decide what to build, then run the build as small gated agent loops.",
+  "license": "MIT",
+  "keywords": ["workflow", "planning", "agents", "loops", "review"]
+}

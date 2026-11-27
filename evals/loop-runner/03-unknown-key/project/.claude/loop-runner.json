@@ -1,0 +1,4 @@
+{
+  "reviewer_agent": "agent-loop-runner:loop-reviewer",
+  "auto_merge": true
+}
