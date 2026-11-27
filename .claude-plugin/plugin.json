@@ -3,5 +3,18 @@
   "version": "0.1.0",
   "description": "Interview, decide what to build, then run the build as small gated agent loops.",
   "license": "MIT",
-  "keywords": ["workflow", "planning", "agents", "loops", "review"]
+  "keywords": [
+    "workflow",
+    "planning",
+    "agents",
+    "loops",
+    "review"
+  ],
+  "author": {
+    "name": "Shachaf Nave",
+    "url": "https://www.linkedin.com/in/shachaf-nave"
+  },
+  "homepage": "https://github.com/shachafnave/looper",
+  "repository": "https://github.com/shachafnave/looper",
+  "icon": ".claude-plugin/icon.png"
 }

@@ -1,11 +1,16 @@
 {
   "name": "agent-loop-runner",
-  "owner": { "name": "shachafnave" },
+  "owner": {
+    "name": "shachafnave"
+  },
   "plugins": [
     {
       "name": "agent-loop-runner",
       "source": "./",
       "description": "Interview, decide what to build, then run the build as small gated agent loops."
     }
-  ]
+  ],
+  "metadata": {
+    "description": "looper: interview, decide, then build in gated agent loops."
+  }
 }
