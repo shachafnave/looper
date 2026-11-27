@@ -21,6 +21,8 @@ jobs:
           npm install -g @anthropic-ai/claude-code
           python -m pip install jsonschema pyyaml
       - name: Run static checks
+        env:
+          PRIVATE_NAMES: ${{ secrets.PRIVATE_NAMES }}
         run: scripts/check-plugin.sh
 
   api-key-gate:

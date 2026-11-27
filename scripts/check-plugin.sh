@@ -42,7 +42,7 @@ for case_file in sorted(glob.glob("evals/**/case.yaml", recursive=True)):
 print(f"schema checked against {fixture_count} config fixtures")
 
 shipped_roots = [".claude-plugin", "skills", "agents", "schema", "evals", "scripts/check-plugin.sh", ".github/workflows/plugin-ci.yml"]
-private_names = ["beautiful" + "-harness", "beautiful" + "_harness"]
+private_names = [name.strip().lower() for name in os.environ.get("PRIVATE_NAMES", "").split(",") if name.strip()]
 em_dash = chr(0x2014)
 
 def shipped_files():
